@@ -745,3 +745,130 @@ footer {
   font-size: 10px;
   opacity: 0.85;
 }
+
+/* ===== PMO Report (ENFRA Power BI style) ===== */
+.report { display: flex; flex-direction: column; gap: 16px; }
+
+.report-bar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(90deg, #061f1a 0%, #0d3a30 60%, #145043 100%);
+  border-bottom: 3px solid var(--brand-safety-yellow);
+  color: #fff;
+}
+
+.report-brand {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #fff;
+}
+
+.report-selectors {
+  display: flex;
+  gap: 18px;
+  flex: 1;
+}
+
+.report-selectors label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brand-iced-steel);
+}
+
+.report-selectors select {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--brand-ocean-steel);
+}
+
+.report-refreshed {
+  font-size: 13px;
+  color: var(--brand-iced-steel);
+  white-space: nowrap;
+}
+.report-refreshed strong { color: #fff; }
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+.kpi-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-tertiary);
+  border-bottom: 4px solid var(--kpi-accent, var(--brand-blue-steel));
+  border-radius: var(--radius-md);
+  padding: 16px 18px 14px;
+  box-shadow: 0 1px 3px rgba(9, 43, 36, 0.06);
+}
+
+.kpi-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.kpi-value {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--brand-ocean-steel);
+}
+
+.kpi-value-text { font-size: 24px; line-height: 1.1; }
+
+@media (prefers-color-scheme: dark) {
+  .kpi-value { color: var(--brand-iced-steel); }
+}
+
+.report-panel {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-tertiary);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  box-shadow: 0 1px 3px rgba(9, 43, 36, 0.06);
+  max-width: 560px;
+}
+
+.report-panel-title {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--brand-ocean-steel);
+  margin-bottom: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .report-panel-title { color: var(--brand-iced-steel); }
+}
+
+.report-table thead th {
+  color: var(--brand-blue-steel);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+}
+
+.report-table td { font-size: 13px; }
+
+.ms-status { font-weight: 600; font-size: 13px; }
+.ms-completed { color: var(--brand-blue-steel-dark); }
+.ms-na { color: var(--text-tertiary); }
+
+@media (max-width: 900px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .report-bar { flex-wrap: wrap; gap: 12px; }
+}

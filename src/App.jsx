@@ -4,6 +4,7 @@ import * as topojson from 'topojson-client'
 import projects from './projects.json'
 import eoMeasures from './eo_measures.json'
 import projectOutlook from './project_outlook.json'
+import pmoReport from './pmo_report.json'
 import './App.css'
 
 const TECH_CONFIG = [
@@ -165,6 +166,7 @@ export default function App() {
         {[
           { id: 'overview', label: 'Overview' },
           { id: 'projects', label: 'Projects' },
+          { id: 'report', label: 'PMO Report' },
           { id: 'map', label: 'Map' },
           { id: 'table', label: 'Sites' },
           { id: 'clients', label: 'Clients' },
@@ -185,6 +187,7 @@ export default function App() {
       <div className="tab-content">
         {tab === 'overview' && <OverviewView setTab={setTab} />}
         {tab === 'projects' && <ProjectsView />}
+        {tab === 'report' && <ProjectReportView />}
         {tab === 'table' && <SitesTable rows={filtered} page={page} setPage={setPage} />}
         {tab === 'clients' && <ClientsTable rows={filtered} page={page} setPage={setPage} />}
         {tab === 'charts' && <ChartsView rows={filtered} />}
@@ -284,6 +287,72 @@ function ProjectsView() {
       </div>
       <Pagination page={page} setPage={setPage} total={filtered.length} />
     </>
+  )
+}
+
+// PMO Report — single-project report styled after the ENFRA Power BI dashboard
+const REPORT_KPIS = [
+  { label: 'Project Manager', get: d => d.projectManager, accent: '#E8943A', text: true },
+  { label: 'Total Tasks', get: d => d.kpis.totalTasks, accent: '#557F7F' },
+  { label: 'Completed Tasks', get: d => d.kpis.completedTasks, accent: '#C9D94B' },
+  { label: 'Days Since MOU', get: d => d.kpis.daysSinceMOU, accent: '#9B5BA5' },
+  { label: 'Critical Tasks Not Completed', get: d => d.kpis.criticalTasksNotCompleted, accent: '#5BC9A5' },
+]
+
+function ProjectReportView() {
+  const d = pmoReport
+  return (
+    <div className="report">
+      <div className="report-bar">
+        <div className="report-brand">ENFRA</div>
+        <div className="report-selectors">
+          <label>Project
+            <select value={d.project} disabled>
+              <option>{d.project}</option>
+            </select>
+          </label>
+          <label>Team
+            <select value={d.team} disabled>
+              <option>{d.team}</option>
+            </select>
+          </label>
+        </div>
+        <div className="report-refreshed">Data Refreshed: <strong>{d.dataRefreshed}</strong></div>
+      </div>
+
+      <div className="kpi-row">
+        {REPORT_KPIS.map(k => (
+          <div className="kpi-card" key={k.label} style={{ '--kpi-accent': k.accent }}>
+            <div className="kpi-label">{k.label}</div>
+            <div className={`kpi-value ${k.text ? 'kpi-value-text' : ''}`}>{k.get(d)}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="report-panel">
+        <div className="report-panel-title">KEY MILESTONES</div>
+        <div className="table-wrap">
+          <table className="report-table">
+            <thead>
+              <tr><th>MILESTONE</th><th>DATE(S)</th><th>STATUS</th></tr>
+            </thead>
+            <tbody>
+              {d.milestones.map((m, i) => (
+                <tr key={i}>
+                  <td>{m.milestone}</td>
+                  <td>{m.dates}</td>
+                  <td>
+                    <span className={`ms-status ${m.status === 'Completed' ? 'ms-completed' : 'ms-na'}`}>
+                      {m.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   )
 }
 
