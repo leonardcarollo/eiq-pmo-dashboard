@@ -1,30 +1,57 @@
 {
-  "project": "Sharp Healthcare",
-  "team": "All",
-  "projectManager": "Jade Griffin",
-  "dataRefreshed": "6/1/2026 1:05:53 PM",
-  "kpis": {
-    "totalTasks": 98,
-    "completedTasks": 36,
-    "daysSinceMOU": 97,
-    "criticalTasksNotCompleted": 41
-  },
-  "milestones": [
-    { "milestone": "Introductory Meeting", "dates": "11/7/25", "status": "Completed" },
-    { "milestone": "MOU Sent", "dates": "1/22/26", "status": "Completed" },
-    { "milestone": "MOU", "dates": "2/24/26", "status": "Completed" },
-    { "milestone": "Site Survey", "dates": "4/6/26 - 4/17/26", "status": "Completed" },
-    { "milestone": "Utility Model", "dates": "4/8/26 - 5/13/26", "status": "Completed" },
-    { "milestone": "Indicative Pricing/Energy Modeling", "dates": "5/11/26 - 5/20/26", "status": "Completed" },
-    { "milestone": "External - Indicative Economic Model Review", "dates": "6/2/26", "status": "N/A" },
-    { "milestone": "BAU Narratives", "dates": "4/28/26 - 6/12/26", "status": "N/A" },
-    { "milestone": "EO Scope", "dates": "5/11/26 - 7/1/26", "status": "N/A" },
-    { "milestone": "EO Energy Model", "dates": "5/28/26 - 7/8/26", "status": "N/A" },
-    { "milestone": "Pricing Model", "dates": "6/4/26 - 7/9/26", "status": "N/A" },
-    { "milestone": "Accretive Meetings", "dates": "6/24/26 - 7/22/26", "status": "N/A" },
-    { "milestone": "Finalized Accretive Scope", "dates": "8/6/26", "status": "N/A" },
-    { "milestone": "Executive Leadership Review", "dates": "5/20/26 - 8/17/26", "status": "N/A" },
-    { "milestone": "Financial Model", "dates": "8/7/26 - 8/24/26", "status": "N/A" },
-    { "milestone": "Validated Proposal", "dates": "8/25/26", "status": "N/A" }
+  "projects": [
+    {
+      "project": "Sharp Healthcare",
+      "team": "All",
+      "projectManager": "Jade Griffin",
+      "dataRefreshed": "6/1/2026 1:05:53 PM",
+      "kpis": {
+        "totalTasks": 98,
+        "completedTasks": 36,
+        "daysSinceMOU": 97,
+        "criticalTasksNotCompleted": 41
+      },
+      "milestones": [
+        { "milestone": "Introductory Meeting", "dates": "11/7/25", "status": "Completed" },
+        { "milestone": "MOU Sent", "dates": "1/22/26", "status": "Completed" },
+        { "milestone": "MOU", "dates": "2/24/26", "status": "Completed" },
+        { "milestone": "Site Survey", "dates": "4/6/26 - 4/17/26", "status": "Completed" },
+        { "milestone": "Utility Model", "dates": "4/8/26 - 5/13/26", "status": "Completed" },
+        { "milestone": "Indicative Pricing/Energy Modeling", "dates": "5/11/26 - 5/20/26", "status": "Completed" },
+        { "milestone": "External - Indicative Economic Model Review", "dates": "6/2/26", "status": "N/A" },
+        { "milestone": "BAU Narratives", "dates": "4/28/26 - 6/12/26", "status": "N/A" },
+        { "milestone": "EO Scope", "dates": "5/11/26 - 7/1/26", "status": "N/A" },
+        { "milestone": "EO Energy Model", "dates": "5/28/26 - 7/8/26", "status": "N/A" },
+        { "milestone": "Pricing Model", "dates": "6/4/26 - 7/9/26", "status": "N/A" },
+        { "milestone": "Accretive Meetings", "dates": "6/24/26 - 7/22/26", "status": "N/A" },
+        { "milestone": "Finalized Accretive Scope", "dates": "8/6/26", "status": "N/A" },
+        { "milestone": "Executive Leadership Review", "dates": "5/20/26 - 8/17/26", "status": "N/A" },
+        { "milestone": "Financial Model", "dates": "8/7/26 - 8/24/26", "status": "N/A" },
+        { "milestone": "Validated Proposal", "dates": "8/25/26", "status": "N/A" }
+      ],
+      "cycleTime": [
+        { "milestone": "MOU", "dates": "2/24/26", "days": 0 },
+        { "milestone": "Site Survey", "dates": "4/6/26 - 4/17/26", "days": 41 },
+        { "milestone": "Utility Model", "dates": "4/8/26 - 5/13/26", "days": 26 },
+        { "milestone": "Indicative Pricing/Energy Modeling", "dates": "5/11/26 - 5/20/26", "days": 33 },
+        { "milestone": "External - Indicative Economic Model Review", "dates": "6/2/26", "days": 46 },
+        { "milestone": "BAU Narratives", "dates": "4/28/26 - 6/12/26", "days": 56 },
+        { "milestone": "EO Scope", "dates": "5/11/26 - 7/1/26", "days": 75 },
+        { "milestone": "EO Energy Model", "dates": "5/28/26 - 7/8/26", "days": 82 },
+        { "milestone": "Pricing Model", "dates": "6/4/26 - 7/9/26", "days": 83 }
+      ],
+      "upcomingTasks": [
+        { "parent": "Group A", "task": "Lighting Solutions Finalization", "status": "N/A", "start": "5/11/2026", "end": "6/16/2026", "assignedTo": "Laura Dowling" },
+        { "parent": "Off-Taker Identification & Pricing", "task": "Final Off-Taker Analysis", "status": "N/A", "start": "5/13/2026", "end": "6/3/2026", "assignedTo": "Kevin Patterson" },
+        { "parent": "Equipment and Inventories List", "task": "BAU O&M Historical Cost", "status": "N/A", "start": "5/15/2026", "end": "5/29/2026", "assignedTo": "Ian T. Hadden" },
+        { "parent": "Executive Leadership Review", "task": "Detailed Narratives for CHP & DER Projects", "status": "N/A", "start": "5/20/2026", "end": "6/3/2026", "assignedTo": "Stephen Lewis" },
+        { "parent": "Group A", "task": "EO Scope Summary Creation", "status": "On Track", "start": "5/28/2026", "end": "6/1/2026", "assignedTo": "Laura Dowling, Cameron Holsten" },
+        { "parent": "Indicative Economic Model", "task": "Financial Model Iteration & Team QC", "status": "On Track", "start": "5/28/2026", "end": "6/1/2026", "assignedTo": "TBD FM Resource, Julia Case" },
+        { "parent": "Group B", "task": "BAU Airflow Maps/ATC Workbook", "status": "On Track", "start": "5/28/2026", "end": "6/3/2026", "assignedTo": "Stephen Lewis" },
+        { "parent": "Group A", "task": "EO Energy Model Development", "status": "N/A", "start": "5/28/2026", "end": "6/16/2026", "assignedTo": "Paul Adkins" },
+        { "parent": "", "task": "", "status": "Scheduled", "start": "6/2/2026", "end": "6/2/2026", "assignedTo": "Frank Ferramosca" },
+        { "parent": "Indicative Economic Model", "task": "External - Indicative Economic Model Review", "status": "N/A", "start": "6/2/2026", "end": "6/2/2026", "assignedTo": "Stephen Lewis, Ian T. Hadden" }
+      ]
+    }
   ]
 }

@@ -834,14 +834,49 @@ footer {
   .kpi-value { color: var(--brand-iced-steel); }
 }
 
+.report-body {
+  display: grid;
+  grid-template-columns: minmax(380px, 460px) 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.report-col-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .report-panel {
   background: var(--bg-primary);
   border: 1px solid var(--border-tertiary);
   border-radius: var(--radius-md);
   padding: 16px 18px;
   box-shadow: 0 1px 3px rgba(9, 43, 36, 0.06);
-  max-width: 560px;
 }
+
+.report-panel-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: -8px;
+  margin-bottom: 12px;
+}
+
+.report-table th.num, .report-table td.num { text-align: right; }
+
+/* Left-column tables: fixed layout so MILESTONE wraps and STATUS/DAYS stay visible */
+.report-col-left .report-table { table-layout: fixed; }
+.report-col-left .report-table td {
+  white-space: normal;
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
+  vertical-align: top;
+}
+.report-col-left .report-table th:nth-child(2),
+.report-col-left .report-table td:nth-child(2) { width: 120px; }
+.report-col-left .report-table th:nth-child(3),
+.report-col-left .report-table td:nth-child(3) { width: 84px; }
 
 .report-panel-title {
   font-size: 15px;
@@ -867,6 +902,31 @@ footer {
 .ms-status { font-weight: 600; font-size: 13px; }
 .ms-completed { color: var(--brand-blue-steel-dark); }
 .ms-na { color: var(--text-tertiary); }
+
+/* Task status pills (Upcoming Tasks) */
+.task-ontrack {
+  background: #E3F3E6; color: #1f7a3d;
+  padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700;
+}
+.task-scheduled {
+  background: #E6F1FB; color: #185FA5;
+  padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700;
+}
+.task-risk {
+  background: #FBE6E6; color: #A52525;
+  padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700;
+}
+.task-na { color: var(--text-tertiary); font-weight: 600; }
+
+@media (prefers-color-scheme: dark) {
+  .task-ontrack { background: #14321f; color: #8fd6a3; }
+  .task-scheduled { background: #14283f; color: #9cc4ef; }
+  .task-risk { background: #3a1414; color: #e9a3a3; }
+}
+
+@media (max-width: 1100px) {
+  .report-body { grid-template-columns: 1fr; }
+}
 
 @media (max-width: 900px) {
   .kpi-row { grid-template-columns: repeat(2, 1fr); }

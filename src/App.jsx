@@ -299,16 +299,27 @@ const REPORT_KPIS = [
   { label: 'Critical Tasks Not Completed', get: d => d.kpis.criticalTasksNotCompleted, accent: '#5BC9A5' },
 ]
 
+function taskStatusClass(s) {
+  const v = (s || '').toLowerCase()
+  if (v === 'on track') return 'task-ontrack'
+  if (v === 'scheduled') return 'task-scheduled'
+  if (v === 'at risk' || v === 'late') return 'task-risk'
+  return 'task-na'
+}
+
 function ProjectReportView() {
-  const d = pmoReport
+  const reports = pmoReport.projects
+  const [selected, setSelected] = useState(reports[0].project)
+  const d = reports.find(p => p.project === selected) || reports[0]
+
   return (
     <div className="report">
       <div className="report-bar">
         <div className="report-brand">ENFRA</div>
         <div className="report-selectors">
           <label>Project
-            <select value={d.project} disabled>
-              <option>{d.project}</option>
+            <select value={selected} onChange={e => setSelected(e.target.value)}>
+              {reports.map(p => <option key={p.project} value={p.project}>{p.project}</option>)}
             </select>
           </label>
           <label>Team
@@ -329,27 +340,80 @@ function ProjectReportView() {
         ))}
       </div>
 
-      <div className="report-panel">
-        <div className="report-panel-title">KEY MILESTONES</div>
-        <div className="table-wrap">
-          <table className="report-table">
-            <thead>
-              <tr><th>MILESTONE</th><th>DATE(S)</th><th>STATUS</th></tr>
-            </thead>
-            <tbody>
-              {d.milestones.map((m, i) => (
-                <tr key={i}>
-                  <td>{m.milestone}</td>
-                  <td>{m.dates}</td>
-                  <td>
-                    <span className={`ms-status ${m.status === 'Completed' ? 'ms-completed' : 'ms-na'}`}>
-                      {m.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <div className="report-body">
+        <div className="report-col-left">
+          <div className="report-panel">
+            <div className="report-panel-title">KEY MILESTONES</div>
+            <div className="table-wrap">
+              <table className="report-table">
+                <thead>
+                  <tr><th>MILESTONE</th><th>DATE(S)</th><th>STATUS</th></tr>
+                </thead>
+                <tbody>
+                  {d.milestones.map((m, i) => (
+                    <tr key={i}>
+                      <td>{m.milestone}</td>
+                      <td>{m.dates}</td>
+                      <td>
+                        <span className={`ms-status ${m.status === 'Completed' ? 'ms-completed' : 'ms-na'}`}>
+                          {m.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="report-panel">
+            <div className="report-panel-title">SURVEY CYCLE TIME ANALYSIS</div>
+            <div className="report-panel-sub">MOU → Survey start · Survey end → all subsequent milestones end</div>
+            <div className="table-wrap">
+              <table className="report-table">
+                <thead>
+                  <tr><th>MILESTONE</th><th>DATE(S)</th><th className="num">DAYS</th></tr>
+                </thead>
+                <tbody>
+                  {d.cycleTime.map((c, i) => (
+                    <tr key={i}>
+                      <td>{c.milestone}</td>
+                      <td>{c.dates}</td>
+                      <td className="num">{c.days}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div className="report-col-right">
+          <div className="report-panel">
+            <div className="report-panel-title">UPCOMING TASKS (NEXT 14 DAYS)</div>
+            <div className="table-wrap">
+              <table className="report-table">
+                <thead>
+                  <tr>
+                    <th>PARENT TASK</th><th>TASK</th><th>STATUS</th>
+                    <th>START</th><th>END</th><th>ASSIGNED TO</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {d.upcomingTasks.map((t, i) => (
+                    <tr key={i}>
+                      <td>{t.parent || '—'}</td>
+                      <td>{t.task || '—'}</td>
+                      <td><span className={`ms-status ${taskStatusClass(t.status)}`}>{t.status}</span></td>
+                      <td>{t.start}</td>
+                      <td>{t.end}</td>
+                      <td>{t.assignedTo}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
