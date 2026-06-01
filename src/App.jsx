@@ -34,7 +34,7 @@ export default function App() {
   const [type, setType] = useState('')
   const [stateFilter, setStateFilter] = useState('')
   const [activeTechs, setActiveTechs] = useState(new Set())
-  const [tab, setTab] = useState('map')
+  const [tab, setTab] = useState('overview')
   const [page, setPage] = useState(0)
 
   const isoOptions = useMemo(() => unique(projects, 'iso'), [])
@@ -145,6 +145,7 @@ export default function App() {
 
       <div className="tabs">
         {[
+          { id: 'overview', label: 'Overview' },
           { id: 'map', label: 'Map' },
           { id: 'table', label: 'Sites' },
           { id: 'clients', label: 'Clients' },
@@ -163,6 +164,7 @@ export default function App() {
       </div>
 
       <div className="tab-content">
+        {tab === 'overview' && <OverviewView setTab={setTab} />}
         {tab === 'table' && <SitesTable rows={filtered} page={page} setPage={setPage} />}
         {tab === 'clients' && <ClientsTable rows={filtered} page={page} setPage={setPage} />}
         {tab === 'charts' && <ChartsView rows={filtered} />}
@@ -174,6 +176,75 @@ export default function App() {
       <footer>
         <p>Data source: CPower Project List Q1 · Built for ENFRA Solutions</p>
       </footer>
+    </div>
+  )
+}
+
+// PMO Overview — portfolio-level landing summary across the whole dataset
+function OverviewView({ setTab }) {
+  const stats = useMemo(() => {
+    const sites = projects.filter(r => !r.isProjectRollup)
+    const projectCount = projects.filter(r => r.isProjectRollup).length || new Set(projects.map(r => r.project).filter(Boolean)).size
+    const clientCount = new Set(projects.map(r => r.client)).size
+    const peakDemand = sites.filter(r => r.site !== 'Enterprise').reduce((s, r) => s + (r.peakDemand || 0), 0)
+    const bessSolar = projects.reduce((s, r) => s + (r.bessNameplate || 0) + (r.solarNameplate || 0), 0)
+
+    const phaseCount = {}
+    projects.forEach(r => { const k = r.phase || 'Unphased'; phaseCount[k] = (phaseCount[k] || 0) + 1 })
+    const phaseArr = Object.entries(phaseCount).sort((a, b) => b[1] - a[1])
+
+    const typeCount = {}
+    sites.forEach(r => { const k = r.clientType || 'Other'; typeCount[k] = (typeCount[k] || 0) + 1 })
+    const typeArr = Object.entries(typeCount).sort((a, b) => b[1] - a[1])
+
+    // Upcoming projected closings, sorted by date (skip N/A / blanks)
+    const upcoming = projectOutlook
+      .filter(p => p.projectedClosingDate && p.projectedClosingDate !== 'N/A')
+      .sort((a, b) => String(a.projectedClosingDate).localeCompare(String(b.projectedClosingDate)))
+
+    return { sites: sites.length, projectCount, clientCount, peakDemand, bessSolar, phaseArr, typeArr, upcoming }
+  }, [])
+
+  return (
+    <div className="overview">
+      <div className="metrics">
+        <Metric label="Projects" value={stats.projectCount} sub="project rollups" />
+        <Metric label="Clients" value={stats.clientCount} sub="unique" />
+        <Metric label="Sites" value={stats.sites} sub="across portfolio" />
+        <Metric label="Peak demand" value={formatPower(stats.peakDemand)} sub="aggregate nameplate" />
+        <Metric label="BESS + Solar" value={formatPower(stats.bessSolar)} sub="combined nameplate" />
+      </div>
+
+      <div className="charts-grid" style={{ marginTop: 16 }}>
+        <BarChart title="Pipeline by phase" data={stats.phaseArr} color="#557F7F" />
+        <BarChart title="Portfolio by client type" data={stats.typeArr} color="#3d5e5e" />
+      </div>
+
+      <div className="outlook-header" style={{ marginTop: 8 }}>
+        <h3>Upcoming projected closings</h3>
+        <p>{stats.upcoming.length} project{stats.upcoming.length !== 1 ? 's' : ''} with a projected closing date</p>
+      </div>
+      <div className="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Project</th><th>Utility</th><th>ISO</th><th>Projected Closing</th></tr>
+          </thead>
+          <tbody>
+            {stats.upcoming.map((p, i) => (
+              <tr key={i}>
+                <td title={p.project}>{p.project || '—'}</td>
+                <td>{p.utility || '—'}</td>
+                <td>{p.iso || '—'}</td>
+                <td>{p.projectedClosingDate}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="state-panel-footer" style={{ marginTop: 8 }}>
+        <button className="primary-btn" onClick={() => setTab('outlook')}>View full project outlook →</button>
+      </div>
     </div>
   )
 }
