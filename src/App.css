@@ -280,8 +280,15 @@ tr:hover td { background: var(--bg-secondary); }
 .phase-EOv2 { background: #EEEDFE; color: #534AB7; }
 .phase-Inactive, .phase-Hold { background: var(--bg-secondary); color: var(--text-secondary); }
 
+.status-active { background: var(--brand-iced-steel); color: var(--brand-ocean-steel); }
+.status-delivery { background: #E6F1FB; color: #185FA5; }
+.status-indicative { background: #FAEEDA; color: #854F0B; }
+.status-closed { background: var(--brand-ocean-steel); color: var(--brand-iced-steel); }
+
 @media (prefers-color-scheme: dark) {
   .phase-Closed { background: #1a322e; color: var(--brand-iced-steel); }
+  .status-active { background: #1a322e; color: var(--brand-iced-steel); }
+  .status-closed { background: #0d1f1b; color: var(--brand-iced-steel); }
 }
 
 .tech-dot {

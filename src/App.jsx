@@ -16,6 +16,24 @@ const TECH_CONFIG = [
 
 const PER_PAGE = 15
 
+// PMO status derived from existing fields. Ordered for display.
+// Layer a maintained pmo_status.json override on top of this later if richer
+// tracking (owner, % complete, target dates) is needed.
+const STATUS_CONFIG = [
+  { key: 'active', label: 'Active', color: '#557F7F', cls: 'status-active' },
+  { key: 'delivery', label: 'In Delivery', color: '#185FA5', cls: 'status-delivery' },
+  { key: 'indicative', label: 'Indicative', color: '#C8862B', cls: 'status-indicative' },
+  { key: 'closed', label: 'Closed', color: '#092B24', cls: 'status-closed' },
+]
+
+function deriveStatus(r) {
+  const phase = (r.phase || '').trim()
+  if (phase === 'Closed' || r.closedDate) return 'closed'
+  if (phase === 'EO v1' || phase === 'EO v2') return 'delivery'
+  if (phase === 'Indicative') return 'indicative'
+  return 'active'
+}
+
 function unique(arr, key) {
   return [...new Set(arr.map(r => r[key]).filter(Boolean))].sort()
 }
@@ -146,6 +164,7 @@ export default function App() {
       <div className="tabs">
         {[
           { id: 'overview', label: 'Overview' },
+          { id: 'projects', label: 'Projects' },
           { id: 'map', label: 'Map' },
           { id: 'table', label: 'Sites' },
           { id: 'clients', label: 'Clients' },
@@ -165,6 +184,7 @@ export default function App() {
 
       <div className="tab-content">
         {tab === 'overview' && <OverviewView setTab={setTab} />}
+        {tab === 'projects' && <ProjectsView />}
         {tab === 'table' && <SitesTable rows={filtered} page={page} setPage={setPage} />}
         {tab === 'clients' && <ClientsTable rows={filtered} page={page} setPage={setPage} />}
         {tab === 'charts' && <ChartsView rows={filtered} />}
@@ -177,6 +197,93 @@ export default function App() {
         <p>Data source: CPower Project List Q1 · Built for ENFRA Solutions</p>
       </footer>
     </div>
+  )
+}
+
+// PMO Projects — status board over the 58 project rollups
+function ProjectsView() {
+  const [search, setSearch] = useState('')
+  const [activeStatus, setActiveStatus] = useState('')
+  const [page, setPage] = useState(0)
+
+  const allProjects = useMemo(
+    () => projects.filter(r => r.isProjectRollup).map(r => ({ ...r, _status: deriveStatus(r) })),
+    []
+  )
+
+  const statusCounts = useMemo(() => {
+    const c = {}
+    allProjects.forEach(r => { c[r._status] = (c[r._status] || 0) + 1 })
+    return c
+  }, [allProjects])
+
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase()
+    return allProjects.filter(r => {
+      if (activeStatus && r._status !== activeStatus) return false
+      if (q && !`${r.project} ${r.clientType} ${r.iso}`.toLowerCase().includes(q)) return false
+      return true
+    })
+  }, [allProjects, search, activeStatus])
+
+  useEffect(() => { setPage(0) }, [search, activeStatus])
+
+  const start = page * PER_PAGE
+  const slice = filtered.slice(start, start + PER_PAGE)
+
+  return (
+    <>
+      <div className="sub-toolbar">
+        <input
+          type="text"
+          className="sub-search"
+          placeholder="Search project, client type, ISO..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
+      <div className="tech-pills" style={{ marginTop: 8 }}>
+        {STATUS_CONFIG.map(s => (
+          <button
+            key={s.key}
+            className={`pill ${activeStatus === s.key ? 'active' : ''}`}
+            onClick={() => setActiveStatus(activeStatus === s.key ? '' : s.key)}
+          >
+            <span className="dot" style={{ background: s.color }} />
+            {s.label}
+            <span className="count-badge">{statusCounts[s.key] || 0}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="table-wrap" style={{ marginTop: 12 }}>
+        <table>
+          <thead>
+            <tr>
+              <th>Project</th><th>Type</th><th>ISO</th>
+              <th>Peak Demand</th><th>Closed Date</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {slice.map((r, i) => {
+              const cfg = STATUS_CONFIG.find(s => s.key === r._status)
+              return (
+                <tr key={i}>
+                  <td title={r.project}><strong>{r.project}</strong></td>
+                  <td>{r.clientType || '—'}</td>
+                  <td>{r.iso || '—'}</td>
+                  <td>{formatPower(r.peakDemand)}</td>
+                  <td>{r.closedDate || '—'}</td>
+                  <td><span className={`phase-badge ${cfg.cls}`}>{cfg.label}</span></td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+      <Pagination page={page} setPage={setPage} total={filtered.length} />
+    </>
   )
 }
 
