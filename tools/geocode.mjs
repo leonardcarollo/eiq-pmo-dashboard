@@ -115,7 +115,7 @@ for (let i = 0; i < targets.length; i += CHUNK) {
 // existing file format exactly (each field on its own line, floats like 0.0)
 // and only adds lat/lng to matched rows.
 const raw = fs.readFileSync(dataPath, 'utf8')
-const srcLines = raw.split('\n')
+const srcLines = raw.split(/\r?\n/)
 const out = []
 let objIndex = -1
 let written = 0
