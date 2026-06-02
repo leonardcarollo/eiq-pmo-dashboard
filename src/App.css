@@ -431,6 +431,37 @@ tr:hover td { background: var(--bg-secondary); }
   font-style: italic;
 }
 
+.zoom-controls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.zoom-controls button {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.zoom-controls button:hover {
+  background: var(--bg-secondary);
+  border-color: var(--brand-blue-steel);
+}
+
+.zoom-controls .zoom-reset {
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .map-with-panel {
   display: grid;
   grid-template-columns: 1fr;

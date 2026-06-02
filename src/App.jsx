@@ -815,6 +815,7 @@ const STATE_NAMES = { AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas'
 
 function MapView({ rows, jumpToTable }) {
   const ref = useRef(null)
+  const zoomRef = useRef(null)
   const [selectedState, setSelectedState] = useState(null)
   const [showDots, setShowDots] = useState(true)
 
@@ -853,11 +854,16 @@ function MapView({ rows, jumpToTable }) {
         .style('width', '100%')
         .style('height', '100%')
 
-      const proj = d3.geoAlbersUsa().scale(w * 1.25).translate([w / 2, h / 2])
+      const statesFC = topojson.feature(us, us.objects.states)
+      const features = statesFC.features
+      // Fit the whole US (incl. AK/HI insets) inside the panel with a small margin,
+      // so the default/reset view always encompasses the entire country.
+      const proj = d3.geoAlbersUsa().fitExtent([[8, 8], [w - 8, h - 8]], statesFC)
       const path = d3.geoPath(proj)
-      const features = topojson.feature(us, us.objects.states).features
 
-      svg.append('g').selectAll('path').data(features).join('path')
+      const zoomLayer = svg.append('g')
+
+      zoomLayer.append('g').selectAll('path').data(features).join('path')
         .attr('d', path)
         .attr('class', 'state-path')
         .attr('stroke', isDark ? 'rgba(255,255,255,.25)' : 'rgba(9,43,36,.2)')
@@ -892,7 +898,7 @@ function MapView({ rows, jumpToTable }) {
         })
 
       if (showDots) {
-        const dotsG = svg.append('g')
+        const dotsG = zoomLayer.append('g')
         rows.forEach(r => {
           if (r.lat && r.lng) {
             const coords = proj([r.lng, r.lat])
@@ -923,8 +929,30 @@ function MapView({ rows, jumpToTable }) {
       legG.append('rect').attr('width', legW).attr('height', legH).attr('rx', 2).attr('fill', `url(#${gradId})`)
       legG.append('text').attr('y', 22).attr('font-size', 10).attr('fill', isDark ? '#a8b5b0' : '#5f5e5a').text('1 site')
       legG.append('text').attr('y', 22).attr('x', legW).attr('text-anchor', 'end').attr('font-size', 10).attr('fill', isDark ? '#a8b5b0' : '#5f5e5a').text(`${maxV} sites`)
+
+      // Pan + zoom (scroll/drag on the map, or use the on-screen buttons)
+      const zoom = d3.zoom()
+        .scaleExtent([1, 8])
+        .extent([[0, 0], [w, h]])
+        .on('zoom', (event) => zoomLayer.attr('transform', event.transform))
+      svg.call(zoom)
+      zoomRef.current = { svg, zoom, w, h }
     })
   }, [rows, stateCount, showDots])
+
+  const zoomBy = (factor) => {
+    const z = zoomRef.current
+    if (!z) return
+    const cur = d3.zoomTransform(z.svg.node())
+    const k = Math.max(1, Math.min(8, cur.k * factor))
+    // scale about the map center so it stays put
+    const t = d3.zoomIdentity.translate(z.w / 2 * (1 - k), z.h / 2 * (1 - k)).scale(k)
+    z.svg.call(z.zoom.transform, t)
+  }
+  const zoomReset = () => {
+    const z = zoomRef.current
+    if (z) z.svg.call(z.zoom.transform, d3.zoomIdentity)
+  }
 
   return (
     <div className="map-layout">
@@ -933,7 +961,12 @@ function MapView({ rows, jumpToTable }) {
           <input type="checkbox" checked={showDots} onChange={e => setShowDots(e.target.checked)} />
           <span>Show site markers</span>
         </label>
-        <span className="map-hint">Click any state to see its sites</span>
+        <div className="zoom-controls">
+          <button onClick={() => zoomBy(1.5)} aria-label="Zoom in" title="Zoom in">+</button>
+          <button onClick={() => zoomBy(1 / 1.5)} aria-label="Zoom out" title="Zoom out">−</button>
+          <button onClick={zoomReset} className="zoom-reset" title="Reset zoom">Reset</button>
+        </div>
+        <span className="map-hint">Click any state to see its sites · scroll or drag to pan</span>
       </div>
       <div className={`map-with-panel ${selectedState ? 'has-panel' : ''}`}>
         <div className="map-container" ref={ref} />
