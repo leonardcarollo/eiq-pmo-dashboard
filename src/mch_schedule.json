@@ -1,0 +1,97 @@
+{
+  "project": "Medical Center Health",
+  "proposalDataDate": "2025-08-01",
+  "proposalIssued": "2025-10-14",
+  "internalDataDate": "2025-12-09",
+  "scheduleStart": "2025-10-20",
+  "substantialCompletion": "2028-11-03",
+  "internalFinish": "2028-11-17",
+  "keyMilestones": [
+    { "id": "A2780", "name": "Commercial Close", "date": "2025-10-20" },
+    { "id": "A1010", "name": "Financial Close / Notice to Proceed", "date": "2025-11-06" },
+    { "id": "A1000", "name": "Project Substantial Completion", "date": "2028-11-03" }
+  ],
+  "phases": [
+    {
+      "name": "Pre-Construction",
+      "start": "2025-11-06",
+      "finish": "2026-07-22",
+      "activities": [
+        { "id": "A1800", "name": "Site Due Diligence", "start": "2025-11-06", "finish": "2025-11-19" },
+        { "id": "A2760", "name": "Solar - System Selection", "start": "2025-11-06", "finish": "2026-01-09" },
+        { "id": "A1780", "name": "Finalize SD Narrative", "start": "2025-11-20", "finish": "2026-01-23" },
+        { "id": "A1790", "name": "Approve SD Narrative", "start": "2026-01-26", "finish": "2026-02-13" },
+        { "id": "A1750", "name": "50% CD", "start": "2026-02-18", "finish": "2026-04-21" },
+        { "id": "A2730", "name": "Solar Design", "start": "2026-02-18", "finish": "2026-07-08" },
+        { "id": "A1730", "name": "50% Set Review & Approval", "start": "2026-04-22", "finish": "2026-04-28", "derivedStart": true },
+        { "id": "A1740", "name": "100% CD", "start": "2026-04-22", "finish": "2026-07-15" },
+        { "id": "A1720", "name": "100% Set Review & Approval", "start": "2026-04-29", "finish": "2026-07-22" }
+      ]
+    },
+    {
+      "name": "Procurement — Equipment",
+      "start": "2026-02-18",
+      "finish": "2027-04-27",
+      "activities": [
+        { "id": "A1760", "name": "Major Equipment RFP", "start": "2026-02-18", "finish": "2026-03-03" },
+        { "id": "A1850", "name": "RFP Distribution to Market", "start": "2026-03-04", "finish": "2026-03-24" },
+        { "id": "A1840", "name": "RFP Response Review", "start": "2026-03-25", "finish": "2026-03-31", "derivedStart": true },
+        { "id": "A1830", "name": "Submittal Review", "start": "2026-03-25", "finish": "2026-04-21" },
+        { "id": "A1820", "name": "Order Major Equipment", "start": "2026-04-01", "finish": "2026-04-28" },
+        { "id": "A1810", "name": "Generators & Elec. Gear - Fab & Deliver", "start": "2026-04-29", "finish": "2027-02-16", "derivedStart": true },
+        { "id": "A2700", "name": "Long Lead Solar Gear - Fab & Deliver", "start": "2026-04-22", "finish": "2027-04-13" },
+        { "id": "A2710", "name": "Short Lead Solar Equip - Fab & Deliver", "start": "2026-04-29", "finish": "2026-09-17" },
+        { "id": "A2720", "name": "HPCHs - Fab & Deliver", "start": "2026-04-29", "finish": "2027-02-16" },
+        { "id": "A2810", "name": "Elective Scope Long Lead Equipment - Fab & Deliver", "start": "2026-04-29", "finish": "2027-04-27" },
+        { "id": "A1910", "name": "Short Lead Mechanical & Electrical Equip - Fab & Deliver", "start": "2026-04-29", "finish": "2026-12-14" }
+      ]
+    },
+    {
+      "name": "Procurement — Sub Contractors",
+      "start": "2026-04-29",
+      "finish": "2026-07-09",
+      "activities": [
+        { "id": "A1880", "name": "Trade Partner RFP", "start": "2026-04-29", "finish": "2026-06-10" },
+        { "id": "A1870", "name": "Trade Partner NTP", "start": "2026-06-11", "finish": "2026-07-01" },
+        { "id": "A1860", "name": "Trade Partner Contract Release", "start": "2026-07-02", "finish": "2026-07-09", "derivedStart": true }
+      ]
+    },
+    {
+      "name": "Permitting",
+      "start": "2025-11-06",
+      "finish": "2026-10-22",
+      "activities": [
+        { "id": "A2740", "name": "Solar Interconnection Pre-Application & Application", "start": "2025-11-06", "finish": "2026-05-05" },
+        { "id": "A2750", "name": "Solar Interconnection Study", "start": "2026-05-06", "finish": "2026-10-22" },
+        { "id": "A1890", "name": "Building Permit", "start": "2026-07-23", "finish": "2026-10-15", "derivedStart": true }
+      ]
+    },
+    {
+      "name": "Construction — Accretive Scope",
+      "start": "2026-02-18",
+      "finish": "2028-07-20",
+      "activities": [
+        { "id": "A1920", "name": "Mobilization", "start": "2026-02-18", "finish": "2026-02-24" },
+        { "id": "A2690", "name": "Lighting Upgrade", "start": "2026-02-25", "finish": "2027-03-09" },
+        { "id": "A2650", "name": "Retrocommission HVAC Systems", "start": "2026-04-29", "finish": "2027-07-07" },
+        { "id": "A2640", "name": "Upgrade Building Automation System", "start": "2026-07-10", "finish": "2028-07-20" },
+        { "id": "A2600", "name": "Upgrade Heating Water System", "start": "2026-12-15", "finish": "2027-07-21" },
+        { "id": "A2630", "name": "Install Generators & Demand Response Enrollment", "start": "2027-01-18", "finish": "2028-07-19" },
+        { "id": "A2670", "name": "Install Solar Array", "start": "2027-03-31", "finish": "2027-10-28" },
+        { "id": "A2620", "name": "Upgrade Air Handling Units", "start": "2027-08-27", "finish": "2028-11-03" },
+        { "id": "A2610", "name": "Install HPCHs", "start": "2028-08-25", "finish": "2028-11-03", "derivedStart": true },
+        { "id": "A2570", "name": "Upgrade Chilled Water System", "start": "2028-08-25", "finish": "2028-11-03", "derivedStart": true }
+      ]
+    },
+    {
+      "name": "Commissioning & Training",
+      "start": "2028-08-25",
+      "finish": "2028-11-03",
+      "activities": [
+        { "id": "A1900", "name": "Commissioning", "start": "2028-08-25", "finish": "2028-11-03" },
+        { "id": "A2100", "name": "Train Plant Operators", "start": "2028-11-03", "finish": "2028-11-03", "milestone": true },
+        { "id": "A2110", "name": "Train Building HVAC techs", "start": "2028-11-03", "finish": "2028-11-03", "milestone": true }
+      ]
+    }
+  ]
+}

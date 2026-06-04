@@ -5,6 +5,7 @@ import projects from './projects.json'
 import eoMeasures from './eo_measures.json'
 import projectOutlook from './project_outlook.json'
 import pmoReport from './pmo_report.json'
+import mchSchedule from './mch_schedule.json'
 import './App.css'
 
 const TECH_CONFIG = [
@@ -167,6 +168,7 @@ export default function App() {
           { id: 'overview', label: 'Overview' },
           { id: 'projects', label: 'Projects' },
           { id: 'report', label: 'PMO Report' },
+          { id: 'mch', label: 'MCH' },
           { id: 'map', label: 'Map' },
           { id: 'table', label: 'Sites' },
           { id: 'clients', label: 'Clients' },
@@ -188,6 +190,7 @@ export default function App() {
         {tab === 'overview' && <OverviewView setTab={setTab} />}
         {tab === 'projects' && <ProjectsView />}
         {tab === 'report' && <ProjectReportView />}
+        {tab === 'mch' && <MCHView />}
         {tab === 'table' && <SitesTable rows={filtered} page={page} setPage={setPage} />}
         {tab === 'clients' && <ClientsTable rows={filtered} page={page} setPage={setPage} />}
         {tab === 'charts' && <ChartsView rows={filtered} />}
@@ -287,6 +290,140 @@ function ProjectsView() {
       </div>
       <Pagination page={page} setPage={setPage} total={filtered.length} />
     </>
+  )
+}
+
+// MCH — Medical Center Health project schedule (from Primavera P6 proposal export)
+const MCH_PHASE_COLORS = ['#557F7F', '#185FA5', '#9B5BA5', '#C8862B', '#3d5e5e', '#5BC9A5']
+
+function MCHView() {
+  const d = mchSchedule
+  const parse = (s) => new Date(s + 'T00:00:00')
+  const fmt = (s) => parse(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+
+  const dates = []
+  d.phases.forEach(p => p.activities.forEach(a => { dates.push(parse(a.start), parse(a.finish)) }))
+  d.keyMilestones.forEach(m => dates.push(parse(m.date)))
+  const min = new Date(Math.min(...dates))
+  const max = new Date(Math.max(...dates))
+  const span = max - min || 1
+  const pos = (s) => ((parse(s) - min) / span) * 100
+
+  const today = new Date()
+  const todayPct = ((today - min) / span) * 100
+  const todayInRange = todayPct >= 0 && todayPct <= 100
+
+  // Year gridlines (Jan 1 of each year within range)
+  const years = []
+  for (let y = min.getFullYear(); y <= max.getFullYear() + 1; y++) {
+    const p = ((new Date(y, 0, 1) - min) / span) * 100
+    years.push({ y, p })
+  }
+
+  const totalActivities = d.phases.reduce((n, p) => n + p.activities.length, 0)
+  const months = Math.round((max - min) / (1000 * 60 * 60 * 24 * 30.44))
+
+  const SUMMARY = [
+    { label: 'Schedule Start', value: fmt(d.scheduleStart), accent: '#557F7F', small: true },
+    { label: 'Substantial Completion', value: fmt(d.substantialCompletion), accent: '#9B5BA5', small: true },
+    { label: 'Duration', value: `${months} mo`, accent: '#185FA5' },
+    { label: 'Activities', value: totalActivities, accent: '#C8862B' },
+    { label: 'Phases', value: d.phases.length, accent: '#5BC9A5' },
+  ]
+
+  return (
+    <div className="report">
+      <div className="report-bar">
+        <div className="report-brand">ENFRA</div>
+        <div className="report-selectors">
+          <label>Project
+            <select value={d.project} disabled><option>{d.project}</option></select>
+          </label>
+        </div>
+        <div className="report-refreshed">Proposal Schedule · issued <strong>{fmt(d.proposalIssued)}</strong></div>
+      </div>
+
+      <div className="kpi-row">
+        {SUMMARY.map(k => (
+          <div className="kpi-card" key={k.label} style={{ '--kpi-accent': k.accent }}>
+            <div className="kpi-label">{k.label}</div>
+            <div className={`kpi-value ${k.small ? 'kpi-value-text' : ''}`}>{k.value}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="report-panel">
+        <div className="report-panel-title">KEY MILESTONES</div>
+        <div className="mch-milestones">
+          {d.keyMilestones.map(m => (
+            <div className="mch-ms" key={m.id}>
+              <div className="mch-ms-date">{fmt(m.date)}</div>
+              <div className="mch-ms-name">{m.name}</div>
+              <div className="mch-ms-id">{m.id}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="report-panel">
+        <div className="report-panel-title">PROJECT SCHEDULE</div>
+        <div className="report-panel-sub">
+          From Primavera P6 proposal export (data date {fmt(d.proposalDataDate)}). The internal {fmt(d.internalDataDate)} schedule extends substantial completion to {fmt(d.internalFinish)}.
+        </div>
+
+        <div className="gantt">
+          {/* Year axis */}
+          <div className="gantt-axis">
+            {years.filter(y => y.p >= -2 && y.p <= 102).map(y => (
+              <div className="gantt-year" key={y.y} style={{ left: `${y.p}%` }}>{y.y}</div>
+            ))}
+          </div>
+
+          <div className="gantt-body">
+            {/* Shared gridline + today overlay across the track area */}
+            <div className="gantt-grid">
+              {years.filter(y => y.p >= 0 && y.p <= 100).map(y => (
+                <div className="gantt-gridline" key={y.y} style={{ left: `${y.p}%` }} />
+              ))}
+              {todayInRange && <div className="gantt-today" style={{ left: `${todayPct}%` }} title="Today" />}
+            </div>
+
+            {d.phases.map((p, pi) => (
+              <div key={p.name}>
+                <div className="gantt-phase">
+                  <div className="gantt-label gantt-phase-label">{p.name}</div>
+                  <div className="gantt-track">
+                    <div
+                      className="gantt-bar gantt-phase-bar"
+                      style={{ left: `${pos(p.start)}%`, width: `${Math.max(pos(p.finish) - pos(p.start), 0.5)}%`, background: MCH_PHASE_COLORS[pi % MCH_PHASE_COLORS.length] }}
+                    />
+                  </div>
+                </div>
+                {p.activities.map(a => (
+                  <div className="gantt-row" key={a.id}>
+                    <div className="gantt-label" title={`${a.id} · ${a.name}`}>
+                      <span className="gantt-aid">{a.id}</span> {a.name}
+                      {a.derivedStart && <span className="gantt-est" title="Start derived from duration">~</span>}
+                    </div>
+                    <div className="gantt-track">
+                      {a.milestone ? (
+                        <div className="gantt-diamond" style={{ left: `${pos(a.start)}%` }} title={`${fmt(a.start)} (milestone)`} />
+                      ) : (
+                        <div
+                          className="gantt-bar"
+                          style={{ left: `${pos(a.start)}%`, width: `${Math.max(pos(a.finish) - pos(a.start), 0.6)}%`, background: MCH_PHASE_COLORS[pi % MCH_PHASE_COLORS.length] }}
+                          title={`${fmt(a.start)} → ${fmt(a.finish)}`}
+                        />
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
